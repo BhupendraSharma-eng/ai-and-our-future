@@ -213,6 +213,7 @@ else if(window.supabase && C.URL && C.KEY){
   } catch(e){ console.warn('sync off', e); }
 }
 setPill();
+if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
 })();
 </script>
 </body>
