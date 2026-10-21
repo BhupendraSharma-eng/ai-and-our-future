@@ -1258,12 +1258,13 @@ if(!G){
     client = window.supabase.createClient(C.URL, C.KEY, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, realtime: { params: { eventsPerSecond: 20 } } });
     ch = client.channel('aof-deck:' + room, { config: { broadcast: { self: false, ack: false } } });
   } catch(e){ status('off: ' + e.message); return; }
-  function publish(st){
-    st = st || window.DeckAPI.state();
+  var ID = Math.random().toString(36).slice(2, 10);   // this deck window
+  function publish(st, nav){
+    st = st || window.DeckAPI.state(); st.id = ID; st.nav = !!nav;
     if(!live) return;
     ch.send({ type: 'broadcast', event: 'state', payload: st }).catch(function(){});
   }
-  window.__onDeckChange = function(st){ publish(st); };
+  window.__onDeckChange = function(st){ publish(st, true); };
   ch.on('broadcast', { event: 'cmd' }, function(msg){
     var p = (msg && msg.payload) || {};
     if(p.a === 'hello'){ publish(); return; }

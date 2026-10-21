@@ -145,7 +145,7 @@ function isStandalone(){ return !!(navigator.standalone || (window.matchMedia &&
   } catch(e){}
 })();
 var S = { s: parseInt(store.get('aof-s')||'0',10)||0, k: parseInt(store.get('aof-k')||'0',10)||0 };
-var talkStart = parseInt(store.get('aof-start')||'0',10)||0, lastDeck = 0, live = false, ch = null;
+var activeDeck = '', talkStart = parseInt(store.get('aof-start')||'0',10)||0, lastDeck = 0, live = false, ch = null;
 var fs = parseInt(store.get('aof-fs')||'28',10); document.documentElement.style.setProperty('--fs', fs+'px');
 function pad(n){ return (n<10?'0':'')+n; }
 function fmt12(hm){ var p = hm.split(':'), h = +p[0], m = p[1]; return ((h%12)||12) + ':' + m + (h>=12?' PM':' AM'); }
@@ -249,7 +249,11 @@ else if(window.supabase && C.URL && C.KEY){
     var client = window.supabase.createClient(C.URL, C.KEY, { auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false } });
     ch = client.channel('aof-deck:' + room, { config: { broadcast: { self: false, ack: false } } });
     ch.on('broadcast', { event: 'state' }, function(msg){
-      var p = msg.payload || {}; lastDeck = Date.now();
+      var p = msg.payload || {};
+      // follow the deck window that navigated most recently; ignore heartbeats from any other open copy
+      if(p.id && activeDeck && p.id !== activeDeck && !p.nav) return;
+      if(p.id) activeDeck = p.id;
+      lastDeck = Date.now();
       if(p.start && p.start !== talkStart) startTimer(p.start);
       var changed = (p.s !== S.s || p.k !== S.k);
       if(typeof p.s === 'number'){ S.s = p.s; S.k = p.k||0; if(changed) render(true); }
