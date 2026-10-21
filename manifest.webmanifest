@@ -1,0 +1,29 @@
+{
+ "name": "AI and Our Future \u00b7 Presenter",
+ "short_name": "AOF Notes",
+ "id": "./presenter.html",
+ "start_url": "./presenter.html?src=homescreen",
+ "scope": "./",
+ "display": "fullscreen",
+ "display_override": [
+  "fullscreen",
+  "standalone"
+ ],
+ "orientation": "any",
+ "background_color": "#0B0A12",
+ "theme_color": "#0B0A12",
+ "icons": [
+  {
+   "src": "assets/icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any maskable"
+  },
+  {
+   "src": "assets/icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
